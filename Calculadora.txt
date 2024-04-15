@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRUD de Estudiantes</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>CRUD de Estudiantes</h1>
+
+    <div id="container">
+        <form id="studentForm">
+            <input type="text" id="documento" placeholder="Tipo de Documento (C.C, C.E, TI, NIUP)" required>
+            <input type="text" id="nombre" placeholder="Nombre" required>
+            <input type="text" id="apellido" placeholder="Apellido" required>
+            <input type="text" id="fechaNacimiento" placeholder="Fecha de Nacimiento (DD/MM/AAAA)" required>
+            <input type="text" id="nivelEstudios" placeholder="Nivel de Estudios (Pregrado, Maestría, Doctorado)" required>
+            <input type="text" id="area" placeholder="Área (Matemáticas, Ciencias, Sistemas)" required>
+            <input type="text" id="grado" placeholder="Grado (Primer Semestre, Segundo Semestre, Tercer Semestre, Cuarto Semestre)" required>
+            <input type="text" id="eps" placeholder="EPS" required>
+            <input type="number" id="salario" placeholder="Salario" required>
+            <button type="submit">Agregar Estudiante</button>
+        </form>
+
+        <div id="studentList"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
+Código CSS (styles.css):
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+h1 {
+    text-align: center;
+}
+
+#container {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+form input, form button {
+    display: block;
+    margin-bottom: 10px;
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+form button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+form button:hover {
+    background-color: #0056b3;
+}
+
+.student-item {
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.student-item:last-child {
+    margin-bottom: 0;
+}
+
+Código JavaScript (script.js):
+
+document.addEventListener('DOMContentLoaded', function () {
+    const studentForm = document.getElementById('studentForm');
+    const studentList = document.getElementById('studentList');
+
+    let students = [];
+
+    function renderStudent(student) {
+        const studentItem = document.createElement('div');
+        studentItem.classList.add('student-item');
+        studentItem.innerHTML = `
+            <p><strong>${student.nombre} ${student.apellido}</strong></p>
+            <p><strong>Tipo Documento:</strong> ${student.documento}</p>
+            <p><strong>Fecha Nacimiento:</strong> ${student.fechaNacimiento}</p>
+            <p><strong>Nivel Estudios:</strong> ${student.nivelEstudios}</p>
+            <p><strong>Área:</strong> ${student.area}</p>
+            <p><strong>Grado:</strong> ${student.grado}</p>
+            <p><strong>EPS:</strong> ${student.eps}</p>
+            <p><strong>Salario:</strong> ${student.salario}</p>
+            <button onclick="deleteStudent(${students.indexOf(student)})">Eliminar</button>
+        `;
+        studentList.appendChild(studentItem);
+    }
+
+    function deleteStudent(index) {
+        students.splice(index, 1);
+        render();
+    }
+
+    function render() {
+        studentList.innerHTML = '';
+        students.forEach(student => renderStudent(student));
+    }
+
+    studentForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const newStudent = {
+            documento: document.getElementById('documento').value,
+            nombre: document.getElementById('nombre').value,
+            apellido: document.getElementById('apellido').value,
+            fechaNacimiento: document.getElementById('fechaNacimiento').value,
+            nivelEstudios: document.getElementById('nivelEstudios').value,
+            area: document.getElementById('area').value,
+            grado: document.getElementById('grado').value,
+            eps: document.getElementById('eps').value,
+            salario: document.getElementById('salario').value
+        };
+        students.push(newStudent);
+        render();
+        studentForm.reset();
+    });
+});
+
+
+Código del servidor (server.js):
+
+const express = require('express');
+const app = express();
+const path = require('path');
+
+app.use(express.static(path.join(__dirname, 'public')));
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
